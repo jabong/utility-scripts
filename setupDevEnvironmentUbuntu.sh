@@ -109,6 +109,9 @@ sudo apt-get install gcalcli alacarte gnome-panel gnome-tweak-tool gnome-shell
 #### Not Essentials ####
 sudo apt-get install picasa kpartx kchmviewer okular wakoopa filezilla konversation vlc wkhtmltopdf
 
+# Install Cheat Codes.
+sudo gem install cheat
+
 # Install Komodo Edit.
 sudo add-apt-repository ppa:mystic-mirage/komodo-edit
 sudo apt-get update; sudo apt-get install komodo-edit

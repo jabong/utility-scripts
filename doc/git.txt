@@ -1,0 +1,219 @@
+##################
+# Git Cheatsheet #
+##################
+
+################
+# Useful Links #
+################
+# Gitolite Home
+http://sitaramc.github.com/gitolite/
+
+# Git Basics - Tagging
+http://git-scm.com/book/en/Git-Basics-Tagging
+
+# A successful Git branching model
+http://nvie.com/posts/a-successful-git-branching-model/
+
+# What is a good Git workflow?
+https://help.github.com/articles/what-is-a-good-git-workflow
+
+# Git Workflows
+https://www.atlassian.com/git/workflows
+
+# Using Pull Requests in GitHub
+https://help.github.com/articles/using-pull-requests
+
+# GitHub Flow
+http://scottchacon.com/2011/08/31/github-flow.html
+
+# Creating a branch or tag in Git
+https://drupal.org/node/1066342
+
+# Basic Branching and Merging (Found by Satish)
+http://progit.org/book/ch3-2.html
+
+# Awesome video to understand this stuff
+http://www.youtube.com/watch?v=RDGzF2M-zlo
+
+# Push and delete remote branches
+http://gitready.com/beginner/2009/02/02/push-and-delete-branches.html
+
+# Change the current branch to master by Sameer.
+# http://stackoverflow.com/questions/2763006/change-the-current-branch-to-master-in-git
+
+# Setting Name and Email for Commits
+git config --global user.name "Your Name"
+git config --global user.email "your.email@jabong.com"
+
+#############
+# Branching #
+#############
+# Create a Branch which Tracks a remote branch.
+git checkout --track -b devel-develfet origin/devel
+
+# Push your Branch e.g, devel-mar
+git push --progress "origin" devel-mar
+
+# Push your Branch to a Remote Branch
+git push --progress "origin" localbranch:remote-branch
+
+# Push your Branch e.g, devel-mar
+git push --progress "origin" devel-mar
+
+# Push your Branch to a Remote Branch
+git push --progress "origin" localbranch:remote-branch
+
+# Push all Branches
+git push --all
+
+
+# Prune References to removed Remote Branches.
+# http://www.gitguys.com/topics/adding-and-removing-remote-branches/
+git remote prune origin
+
+# Delete a Local Branch
+git branch -D branch-name
+
+# Remove a remote Branch Method 1
+git push origin --delete remote-branch
+
+# Remove a remote Branch Method 2
+git push origin :remote-branch
+
+git remote show origin
+
+# Get the diff between two branches
+git diff --name-status master..branch
+
+###########
+# Tagging #
+###########
+# List all Tags
+git tag
+
+# Creating a Tag
+git tag
+
+# Push the Tag to Remote
+git push origin v1.4
+# Alternative
+git push origin tag 7.x-1.0
+
+# Push all Tags
+git push --tags
+
+######################
+# Working with Files #
+######################
+
+# Revert a File
+git reset HEAD filePath
+git checkout --  filePath
+
+# Reset last Pull
+git reset --hard ORIG_HEAD
+
+# Testing a Commit.
+
+# Pull from Orininal Branch
+git pull -v --progress "origin" master
+
+# Add Files
+git add *.php
+git commit -a -m 'Comment Here'
+# push them back to the repository
+git push
+
+# To know the current status of files
+git status
+
+# To resolve conflicts when it shows the error message  "Merge head exists"
+git commit -a -m "Resolved Conflicts"
+
+git ls -files -u
+
+git reset --merge ORIG_HEAD
+
+git rebase --continue
+
+# to undo the latest pull
+git reset --hard ORIG_HEAD ------
+
+# to get the diff between two branches
+git diff --name-status master..branch
+
+# deletes a remote branch
+$ git push origin --delete branch_name ---- 
+
+# deletes a local branch
+$ git branch -D branch_name
+
+================================================================================
+# Git, Revert to a commit by SHA hash?
+# http://stackoverflow.com/questions/1895059/git-revert-to-a-commit-by-sha-hash
+# reset the index to the desired tree
+git reset 56e05fced
+
+# move the branch pointer back to the previous HEAD
+git reset --soft HEAD@{1}
+
+git commit -m "Revert to 56e05fced"
+
+# Update working copy to reflect the new commit
+git reset --hard
+================================================================================
+
+# Rename Master
+http://stackoverflow.com/questions/2862590/how-to-replace-master-branch-in-git-entirely-from-another-branch
+git checkout seotweaks
+git merge -s ours master
+git checkout master
+git merge seotweaks
+
+# Work with existing Source
+# http://www.jedi.be/blog/2009/05/06/8-ways-to-share-your-git-repository/#gitosis
+cd project-X
+git remote add origin gitosis@gitosis-server:project-X.git
+git push origin master:refs/heads/master
+
+# Unlinking a Repository from Remote:
+#   If you are setting up your Git repository and find that you added an
+#   invalid remote origin and want to remove it, simple run this command:
+git remote rm origin
+
+#############################
+# Key Generation on Windows #
+#############################
+1) Use PuttyGen to Generate Public/Private Keys.
+2) Save the Private Key Somewhere.
+    Convert the Public Key to OpenSSH Format using the Instructions in the following Link
+        http://stackoverflow.com/questions/2224066/how-to-convert-ssh-keypairs-generated-using-puttygenwindows-into-key-pairs-used
+
+            A) Open PuttyGen
+            B) Click Load
+            C) Load your private key
+            D) Go to Conversions->Export OpenSSH and export your private key
+            E) Copy your private key to ~/.ssh/id_dsa (or id_rsa).
+
+            F) Create the RFC 4716 version of the public key using ssh-keygen
+
+            ssh-keygen -e -f ~/.ssh/tmp/id_rsa > ~/.ssh/tmp/id_rsa_com.pub
+
+            G) Convert the RFC 4716 version of the public key to the OpenSSH format:
+
+            ssh-keygen -i -f ~/.ssh/tmp/id_rsa_com.pub > ~/.ssh/tmp/id_rsa.pub
+
+3) If you are setting up your Git repository and find that you added an invalid remote origin and want to remove it, simple run this command:
+git remote rm origin
+
+###############
+# GIT Clients #
+###############
+tig
+diffuse
+qct
+tailor
+easygit
+dolphin-plugins
+TortoiseGit
+GitHub Desktop
