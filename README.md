@@ -1,4 +1,4 @@
-shell-utilities
+Utility Scripts
 ===============
 
-A collection of Shell Scripts to Make your day to day activities fun
+A collection of scripts to Make your day to day activities fun
