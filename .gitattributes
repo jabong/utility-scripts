@@ -8,6 +8,8 @@
 *.js    text
 *.css   text
 *.html  text
+*.xml   text
+*.ini   text
 *.css   text
 *.md    text
 *.sh    text
