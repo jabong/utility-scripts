@@ -33,6 +33,10 @@
 # NOTE: Make sure to enable Canonical Partners in Software Sources.
 ##
 
+# CAUTION: You should not run this script directly. It is advised to run individual Scripts.
+echo "CAUTION: You should not run this script directly. It is advised to run individual Scripts."
+exit 1
+
 # Install openssh so that you can connect from other machine.
 sudo apt-get install ssh openssh-server openssh-blacklist openssh-blacklist-extra rssh openssh-client screen
 
@@ -65,6 +69,20 @@ sudo apt-get install apache2 php5-mysql libapache2-mod-php5 mysql-server phpmyad
 
 # Install commonly used PHP Extensions
 sudo apt-get install php5-curl php5-tidy php5-xdebug php5-ldap php5-xmlrpc php5-imagick
+
+# Enable Apache Modules for rewrite,
+sudo a2enmod rewrite
+
+# Edit Config and add below settings /etc/mysql/my.cnf
+# default-storage-engine = innodb
+# character-set-server = utf8
+
+# Edit Config and add below settings /etc/php5/php.ini
+# display_errors = On
+# max_execution_time = 300
+# post_max_size = 128M
+# upload_max_filesize = 64M
+# error_reporting = E_ALL & ~E_DEPRECATED
 
 # Install Memcache and its PHP Libraries
 sudo apt-get install memcached php5-memcache php5-memcached
