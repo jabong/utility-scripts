@@ -68,7 +68,7 @@ sudo apt-get install apache2 php5-mysql libapache2-mod-php5 mysql-server phpmyad
     mysql-client apache2-doc php-pear tinyca libapache2-mod-auth-mysql php5-mysql
 
 # Install commonly used PHP Extensions
-sudo apt-get install php5-curl php5-tidy php5-xdebug php5-ldap php5-xmlrpc php5-imagick
+sudo apt-get install php5-curl php5-tidy php5-xdebug php5-ldap php5-xmlrpc php5-imagick php5-xhprof
 
 # Enable Apache Modules for rewrite,
 sudo a2enmod rewrite
