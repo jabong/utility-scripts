@@ -73,6 +73,15 @@ sudo apt-get install php5-curl php5-tidy php5-xdebug php5-ldap php5-xmlrpc php5-
 # Enable Apache Modules for rewrite,
 sudo a2enmod rewrite
 
+# Apache Configuration to avoid ServerName Error when starting Apache2
+# http://askubuntu.com/questions/329323/problem-with-restarting-apache2
+# Create the configuration file in the "available" section
+echo "ServerName localhost" | sudo tee /etc/apache2/conf-available/servername.conf
+# enable it by creating a symlink to it from the "enabled" section
+sudo a2enconf servername
+# restart the server
+sudo service apache2 restart
+
 # Edit Config and add below settings /etc/mysql/my.cnf
 # default-storage-engine = innodb
 # character-set-server = utf8
