@@ -45,6 +45,13 @@ http://gitready.com/beginner/2009/02/02/push-and-delete-branches.html
 git config --global user.name "Your Name"
 git config --global user.email "your.email@jabong.com"
 
+# Prune and Pack Git Repository.
+git prune
+git gc --aggressive
+git repack
+git repack -a
+git prune-packed
+
 #############
 # Branching #
 #############
