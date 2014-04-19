@@ -143,6 +143,9 @@ sudo gem install cheat
 sudo add-apt-repository ppa:mystic-mirage/komodo-edit
 sudo apt-get update; sudo apt-get install komodo-edit
 
+# Installer W3C Validator @see http://validator.w3.org/source/
+sudo apt-get install w3c-markup-validator
+
 # Wine
 sudo apt-get install wine
 
@@ -171,6 +174,9 @@ sudo pear install PHP_Beautifier-0.1.15
 
 # Alternative method using pyrus (@TODO Has problems Doesn't work as expected.)
 sudo php pyrus.phar install pear/PHP_Beautifier-0.1.15
+
+# Python and Python Adons
+sudo apt-get install python-sqlparse
 
 ##
 # Install these softwares separately by downloading from Software Repository at LAN
