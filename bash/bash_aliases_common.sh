@@ -111,7 +111,8 @@ alias listFiles='find . -type f -maxdepth 1'
 alias home='cd ~/'
 alias h='cd ~/'
 alias cdp='cd $p'
-alias f="find . |grep -i"
+# alias f="find  . |grep -i"
+alias f="find  . -iname "
 alias ggl='ping -c 5 google.com'
 alias nwc="sudo cat /etc/network/interfaces"
 alias p="cd ~/projects"
@@ -137,8 +138,9 @@ alias ping='ping -c 5'
 
 # Taken from http://ubuntuforums.org/showthread.php?t=679762
 alias hs='history'
-alias clr='clear'
+alias hsl='history | less'
 alias hss='history | grep'
+alias clr='clear'
 
 # System info
 alias cpuu="ps -e -o pcpu,cpu,nice,state,cputime,args --sort pcpu | sed '/^ 0.0 /d'"
@@ -151,11 +153,6 @@ alias 000='chmod 000'
 alias 644='chmod 644'
 alias 755='chmod 755'
 alias perm='stat --printf "%a %n \n "' # requires a file name e.g. perm file
-
-# Exim Aliases
-alias bjexiclean='echo "Removing all mails with no sender set"; exiqgrep -f "^<>$" -i | xargs exim -Mrm'
-alias bjexifrozen='exiqgrep -z -i | xargs exim -Mrm'
-alias bjexiqueue='exim -bp > $dumpdir/exim/queue_all; less $dumpdir/exim/queue_all'
 
 # Databases
 alias bjdbcheck="mysqlcheck --all-databases --all-in-1 --repair"
@@ -186,14 +183,20 @@ function rmMatching()
     printInfo "### Done ###"
 }
 
+function bjClearScreen()
+{
+    count=40
+    if [ ! -z $1 ]; then
+        count=$1
+    fi
+    for ((i=1;i<=$count;i++)); do
+        printSeparator
+    done
+}
+
 function grepf()
 {
     grep $1 *
-}
-
-function grepphp()
-{
-    grep --include=*.php $1 *
 }
 
 function ispeed()
@@ -201,6 +204,76 @@ function ispeed()
     wget --output-document=/dev/null http://speedtest.wdc01.softlayer.com/downloads/test500.zip
 }
 
+function bjCopyFilesRecursivelyWithExtension()
+{
+    if [ ${1} ]; then
+        find . -type f ${permissionOptions} -iname "*.$1" -exec bjCopyFileRecursively {} \;
+    fi
+    printInfo "Done with fixing File Permissions for extension '$1'"
+}
+
+function bjCopyFilesRecursively()
+{
+    fileToCppy="$1"
+    destinationDir="$2"
+    sourceDir="."
+    if [ ! -d ${destinationDir} ]; then
+        printInfo "'${destinationDir}' is Not a valid Directory"
+        return;
+    fi
+    if [ ${3} ]; then
+        sourceDir="$3"
+    fi
+    if [ ! -f "${sourceDir}/${fileToCppy}" ]; then
+        printInfo "'${sourceDir}/${fileToCppy}' is Not a valid File"
+        return;
+    fi
+    relativeDestinationDir="$(dirname ""${fileToCppy}"")"
+    if [ "${relativeDestinationDir}" -eq "." ]; then
+        cp -R "${sourceDir}/${fileToCppy}"
+        cp -R "${sourceDir}/${fileToCppy}" "${destinationDir}/"
+    else
+        printDryRunCommand "mkdir -p ""${destinationDir}/${relativeDestinationDir}"""
+        # mkdir -p "${destinationDir}/${relativeDestinationDir}"
+        printDryRunCommand "cp -R ""${sourceDir}/${fileToCppy}"" ""${destinationDir}/${relativeDestinationDir}/"""
+        # cp -R "${sourceDir}/${fileToCppy}" "${destinationDir}/${relativeDestinationDir}/"
+    fi
+}
+
+function bjFixFilePermissions()
+{
+    permissionOptions=''
+    if [ ${2} ]; then
+        permissionOptions="-perm 0${2}"
+    fi
+    if [ ${1} ]; then
+        printHeader "Fix File Permissions for extension '$1'"
+        printDryRunCommand "find . -type f ${permissionOptions} -iname ""*.$1"" -exec chmod 644 {} \;"
+        find . -type f ${permissionOptions} -iname "*.$1" -exec chmod 644 {} \;
+    fi
+    printInfo "Done with fixing File Permissions for extension '$1'"
+}
+
+bjFindFilesWithExtension()
+{
+    permissionOptions=''
+    if [ ${2} ]; then
+        permissionOptions="-perm 0${2}"
+    fi
+    if [ ${1} ]; then
+        printHeader "Check File Permissions for extension '$1'"
+        printDryRunCommand "find . -type f ${permissionOptions} -iname ""*.$1"" -exec ls -lah {} \;"
+        find . -type f ${permissionOptions} -iname "*.$1" -exec ls -lah {} \;
+    fi
+    printInfo "Done with checking File Permissions for extension '$1'"
+}
+
+function bjFindAllFileTypes()
+{
+    # http://stackoverflow.com/questions/1842254/how-can-i-find-all-of-the-distinct-file-extensions-in-a-folder-hierarchy
+    find . -type f | perl -ne 'print $1 if m/\.([^.\/]+)$/' | sort -u
+    # find . -type f -name "*.*" | awk -F. '!a[$NF]++{print $NF}'
+}
 ###############################
 # Clipboard related functions #
 ###############################
@@ -299,73 +372,6 @@ function bjChangeExtension()
     fileExtension=$(bjFileExtension ${originalFile})
     destinationFile=${dirName}/${fileName}.${targetExtension}
     echo "${destinationFile}"
-}
-
-function phpf()
-{
-    if $isMac; then
-        printInfo "*** Not implemented for Mac OSX ***"
-    fi
-    if [ -f $1 ] ; then
-        dirName=`dirname $1`
-        baseName=`basename $1`
-        case $1 in
-            *.php)  phpformat "$1" $2;;
-             *)     echo "'$1' cannot be formatted as it doesn't seem like a php file" ;;
-        esac
-    elif [ -d $1 ]; then
-        for file in $1/*;
-        do
-            echo "Process for $file"
-            phpf $file $2;
-        done;
-    fi
-}
-
-function phpff()
-{
-    if [ -f $1 ] ; then
-        dirName=`dirname $1`
-        baseName=`basename $1`
-        case $1 in
-            *.php)  phpformat "$1" FINAL;;
-             *)     echo "'$1' cannot be formatted as it doesn't seem like a php file" ;;
-        esac
-    elif [ -d $1 ]; then
-        echo "$1 is a Directory, enter into it."
-        for file in $1/*;
-        do
-            echo "Process for $file"
-            phpff $file;
-        done;
-    fi
-}
-
-function phpformat()
-{
-    mode=$2
-    if [ -z $mode ] ; then
-        isFinal=0;
-    else
-        isFinal=1;
-    fi
-    originalFile=$1
-    dirName=$(dirname ${originalFile})
-    fileName=$(bjFileName ${originalFile})
-    fileExtension=$(bjFileExtension ${originalFile})
-    destinationFile=${dirName}/${fileName}.formatted.${fileExtension}
-
-    if [ -f $1 ] ; then
-        echo "-- Formatting the File ${originalFile} --"
-        ${HOME}/codebase/www/tools/phpformatter/release/phpf ${originalFile} ${destinationFile}
-        echo "-- Remove Trailing Spaces/Tabs from file. --"
-        sed -i 's/[ \t]*$//' $destinationFile
-        if (( $isFinal )) ; then
-            mv $destinationFile $originalFile
-            destinationFile=$originalFile
-        fi
-        echo "Saved in ${destinationFile}"
-    fi
 }
 
 function tidyf()
@@ -477,12 +483,13 @@ function monitorSite()
 ## File Backup, Move and Copy
 function bkpt()
 {
-    echo "Function call to Backup/Tar Directory $1"
+    echo "Function call to Backup a compressed copy of a Directory $1"
     currentDirectory=`pwd`
     dirName=""
     baseName=""
     tarOptions=""
 
+    # @TODO Path should not be dependent on something outside Repo.
     if [ -f ${HOME}/settings/patterns/exclude/lamp.txt ] ; then
         # tarOptions="--exclude-from ${HOME}/settings/patterns/exclude/lamp.txt"
         tarOptions=""
@@ -499,9 +506,9 @@ function bkpt()
         exit
     fi
 
-    pfx=`date +%Y-%m-%d_%H-%M-%S_`
+    pfx=`pfx`
     oldFileName="$baseName"
-    newFileName="$pfx$baseName.tar.bz2"
+    newFileName="${pfx}${baseName}.tar.bz2"
 
     echo "Change Directory to $dirName"
     cd $dirName
@@ -613,15 +620,6 @@ function dumpf()
 function convertEOL()
 {
     perl -pi -e 's/\r\n?/\n/g' $1
-}
-
-function emailq()
-{
-    php ~/www/index.php \
-        --moduleName=emailqueue \
-        --managerName=emailqueue \
-        --action=process \
-        --deliveryDate=all --limit=1
 }
 
 ##################################################################
@@ -1310,6 +1308,12 @@ function currentDirInfo()
     echo "-- Current Directory is `pwd` --"
 }
 
+# File Information
+function bjCopyFilePath()
+{
+    bjFilePath "$1" copy
+}
+
 function bjFilePath()
 {
     filePath="$1"
@@ -1317,11 +1321,16 @@ function bjFilePath()
     firstCharacter="${filePath:0:1}"
     # printHeader "First Character is ${firstCharacter}"
     if [ "${firstCharacter}" != "/" ]; then
-        filePath=$(pwd)/$1
+        if [ -z "$1" ]; then
+            filePath=$(pwd)
+        else
+            filePath="$(pwd)/$1"
+        fi
     fi
-    echo "${filePath}"
+    printf "${filePath}"
 
     if [ ! -z ${2} ]; then
+        pasteClipboardContent
         copyToClipboard "${filePath}"
     fi
 }
@@ -1340,6 +1349,26 @@ function bjFileExtension()
     echo ${fileExtension}
 }
 
+function bjFileSize()
+{
+    if [ -z "${1}" ]; then
+        printInfo "none"
+        return
+    fi
+    fileSize=$(stat -c%s "${1}")
+    echo ${fileSize}
+}
+
+function bjFilePermission()
+{
+    if $isMac; then
+        echo $(stat -c %a "${1}") # @FIXIT
+    else
+        echo $(stat -c %a "${1}")
+    fi
+}
+
+# String Operations
 function toLowerBash()
 {
     string=$1
@@ -1506,6 +1535,15 @@ function bjCompareFiles()
     ${compareProgram} ${mineDir}/${comparePath} ${theirsDir}/${comparePath}
 }
 
+function bjListEmptyDirectories()
+{
+    pathToCheck=.
+    if [ "$1" ]; then
+        pathToCheck="$1"
+    fi
+    find ${pathToCheck} -type d -empty
+}
+
 function bjConvertToMarkdown()
 {
     inputFile="$1"
@@ -1524,11 +1562,19 @@ function bjGetAkamaiPragmaHeaders()
     echo "${pragmaHeaders}"
 }
 
+function bjEnsureRemoteDir()
+{
+    sshUser="$1"
+    sshHost="$2"
+    remoteDirectory="$3"
+    ssh -t ${sshUser}@${sshHost} "[ -d "${remoteDirectory}" ] || mkdir -p "${remoteDirectory}""
+}
+
 #########################
 # Most Common Functions #
 #########################
 
-function showOutput()
+function previewSyntax()
 {
     fileName=$1
     printStatus "Content of File: ${fileName}"
