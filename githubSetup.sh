@@ -1,5 +1,8 @@
 #!/bin/bash
 
+userName=""
+userEmail=""
+
 function usage()
 {
     echo "You can run this script by running below command"
@@ -26,21 +29,28 @@ function doPublishSshKeys()
     echo "## https://help.github.com/articles/generating-ssh-keys#step-3-add-your-ssh-key-to-github"
 }
 
-printf "Enter your Full Name: "
-read userName
+function doCaptureUserInfo()
+{
 
-printf "Enter your email: "
-read userEmail
+    echo "Set Global GIT Config for User name and Email if not set already"
+    userName="$(git config --global user.name)"
+    userEmail="$(git config --global user.email)"
+    if [ "${userName}" = "" ]; then
+        printf "Enter your Full Name: "
+        read userName
+        git config --global user.name "${userName}"
+    fi
+    if [ "${userEmail}" = "" ]; then
+        printf "Enter your email: "
+        read userEmail
+        git config --global user.email "${userEmail}"
+    fi
+}
 
-# if [[ ! "${userName}" ] -o [ ! "${userName}" ]]; then
 if [ ! "${userName}" -o ! "${userEmail}" ]; then
     echo 'Can not proceed without name or email'
     exit;
 fi
-
-echo "Set Global GIT Config for User name and Email"
-git config --global user.name "${userName}"
-git config --global user.email "${userEmail}"
 
 echo "Create the SSH Directory if it doesn't exist"
 mkdir -p ~/.ssh
