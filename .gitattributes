@@ -1,22 +1,37 @@
 # Handle line endings automatically for files detected as text
 # and leave all files detected as binary untouched.
-* text=auto
+* text=auto eol=lf
 
 # These files are text and should be normalized (convert crlf to lf)
 *.txt   text
-*.php   text
-*.js    text
-*.css   text
-*.html  text
-*.xml   text
-*.ini   text
-*.css   text
+*.php   text diff=php
+*.inc   text diff=php
+*.js    text diff=js
+*.css   text diff=css
+*.html  text diff=html
+*.xml   text diff=xml
+*.ini   text diff=ini
 *.md    text
 *.sh    text
 *.py    text
 
+# Denote all files that are truly binary and should not be modified.
 # Images should be treated as binary
 # (binary is a macro for -text -diff)
 *.png   binary
 *.jepg  binary
+*.JPEG  binary
+*.jpg   binary
+*.JPG   binary
 *.gif   binary
+
+*.gz    binary
+*.ico   binary
+*.phar  binary
+
+*.ttf   binary
+*.eot   binary
+*.db    binary
+*.swf   binary
+*.tar   binary
+*.pdf   binary
