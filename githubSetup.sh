@@ -12,7 +12,8 @@ function usage()
 
 function doGenerateSshKeys()
 {
-    echo "Generating SSH Keys. Press Enter when prompted for Passphrase."
+    cd ~/.ssh
+    echo "Generating SSH Keys for User '${userEmail}'. !!!Press Enter when prompted for Passphrase!!!"
     ssh-keygen -t rsa -C "${userEmail}" -f id_rsa
     ssh-add ~/.ssh/id_rsa
     doPublishSshKeys
@@ -46,6 +47,8 @@ function doCaptureUserInfo()
         read userEmail
         git config --global user.email "${userEmail}"
     fi
+    echo ${separator}
+    echo "User Information: Name: ${userName}; Email: ${userEmail}"
 }
 
 function runSetup()
