@@ -86,10 +86,13 @@ function doDownloadRepository()
     mkdir -p ${tempPath}
     curl -o ${tempPath}/INDFAS.tar.bz2 "http://172.18.0.43/download/git-repository/INDFAS.tar.bz2"
     cd ${tempPath}
-    tar xjf INDFAS.tar.bz2
+    tar pxjf INDFAS.tar.bz2
     cd INDFAS
     git fetch origin
+    git reset --hard FETCH_HEAD
     git pull origin master
+    echo "Fix permissions for directories."
+    bash tools/initRepo.sh
 
     if [ -d ~/projects/INDFAS ]; then
         echo "You seem to already have a setup at ~/projects/INDFAS. Please move this Directory if you want to start afresh"
