@@ -28,7 +28,6 @@ function doPublishSshKeys()
     echo ${separator}
     echo "## Please visit the link below to Add your SSH key to GitHub"
     echo "## https://github.com/settings/ssh"
-    echo "## https://help.github.com/articles/generating-ssh-keys#step-3-add-your-ssh-key-to-github"
     echo ${separator}
 }
 
@@ -51,7 +50,7 @@ function doCaptureUserInfo()
     echo "User Information: Name: ${userName}; Email: ${userEmail}"
 }
 
-function runSetup()
+function initSetup()
 {
     originalDir=$(pwd)
     echo ${separator}
@@ -73,11 +72,39 @@ function runSetup()
         doPublishSshKeys
     fi
 
+    doDownloadRepository
+
     echo "Go back to Original Directory"
     cd ${originalDir}
 }
 
+function doDownloadRepository()
+{
+    echo ${separator}
+    echo "Downloading Repository from LAN. This will work only if you are on LAN"
+    tempPath="~/Downloads/$(date +%Y-%m-%d_%H-%M-%S)"
+    mkdir -p ${tempPath}
+    curl -o ${tempPath}/INDFAS.tar.bz2 "http://172.18.0.43/download/git-repository/INDFAS.tar.bz2"
+    cd ${tempPath}
+    tar xjf INDFAS.tar.bz2
+    cd INDFAS
+    git fetch origin
+    git pull origin master
+
+    if [ -d ~/projects/INDFAS ]; then
+        echo "You seem to already have a setup at ~/projects/INDFAS. Please move this Directory if you want to start afresh"
+        echo "Latest Repository has been downloaded into a folder ${tempPath} and can be used for an additional setup."
+    else
+        mkdir -p ~/projects
+        mv ${tempPath}/INDFAS ~/projects/
+        rm -fR ${tempPath}
+        echo "Your repository is all set at location ~/projects/INDFAS"
+    fi
+    echo "!!!!!!!!!!!!! CONGRATULATIONS, you are all set. !!!!!!!!!!!!!!!"
+    echo ${separator}
+}
+
 separator="#########################################################################"
+# operation="$1"
 
-runSetup
-
+runSetup "$@"
