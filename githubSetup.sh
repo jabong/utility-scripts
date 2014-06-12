@@ -64,6 +64,11 @@ function initSetup()
         echo 'Can not proceed without name or email'
         exit;
     fi
+}
+
+function runSetup()
+{
+    initSetup "$@"
 
     if [ ! -f ~/.ssh/id_rsa ]; then
         doGenerateSshKeys
