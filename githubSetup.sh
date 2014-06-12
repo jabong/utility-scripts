@@ -3,6 +3,40 @@
 userName=""
 userEmail=""
 
+# Taxt Formating
+txtRed=$(tput setaf 1) # Red
+txtGreen=$(tput setaf 2) # Green
+txtBlue=$(tput setaf 4) # Blue
+txtWhite=$(tput setaf 7) # White
+txtBold=$(tput bold) # Text Bold
+txtReset=$(tput sgr0) # Text reset.
+
+# Utilities for Text Formatting.
+function txtRed()
+{
+    printf "${txtRed}$*${txtReset}"
+}
+
+function txtGreen()
+{
+    printf "${txtGreen}$*${txtReset}"
+}
+
+function txtBlue()
+{
+    printf "${txtBlue}$*${txtReset}"
+}
+
+function txtWhite()
+{
+    printf "${txtWhite}$*${txtReset}"
+}
+
+function txtBold()
+{
+    printf "${txtBold}$*${txtReset}"
+}
+
 function usage()
 {
     echo "You can run this script by running below command"
@@ -26,8 +60,14 @@ function doPublishSshKeys()
     xclip -sel clip < ~/.ssh/id_rsa.pub
 
     echo ${separator}
-    echo "## Please visit the link below to Add your SSH key to GitHub"
-    echo "## https://github.com/settings/ssh"
+    echo ${separator}
+    echo ${separator}
+    echo ${separator}
+    txtGreen "## Please visit the link below to Add your SSH key to GitHub"
+    txtGreen "## https://github.com/settings/ssh"
+    echo ${separator}
+    echo ${separator}
+    echo ${separator}
     echo ${separator}
 }
 
@@ -54,7 +94,7 @@ function initSetup()
 {
     originalDir=$(pwd)
     echo ${separator}
-    echo 'Welcometo Jabong!! This script will help you get started with Development for Jabong'.
+    txtBold 'Welcometo Jabong!! This script will help you get started with Development for Jabong'.
     echo "Create the SSH Directory if it doesn't exist"
     mkdir -p ~/.ssh
 
@@ -87,7 +127,7 @@ function doDownloadRepository()
 {
     echo ${separator}
     echo "Downloading Repository from LAN. This will work only if you are on LAN"
-    tempPath="~/Downloads/$(date +%Y-%m-%d_%H-%M-%S)"
+    tempPath=~/Downloads/$(date +%Y-%m-%d_%H-%M-%S)
     mkdir -p ${tempPath}
     curl -o ${tempPath}/INDFAS.tar.bz2 "http://172.18.0.43/download/git-repository/INDFAS.tar.bz2"
     cd ${tempPath}
@@ -96,7 +136,7 @@ function doDownloadRepository()
     git fetch origin
     git reset --hard FETCH_HEAD
     git pull origin master
-    echo "Fix permissions for directories."
+    txtBold "Fix permissions for directories."
     bash tools/initRepo.sh
 
     if [ -d ~/projects/INDFAS ]; then
