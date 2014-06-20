@@ -1,5 +1,5 @@
 #!/bin/bash
-
+sudo apt-get install git
 userName=""
 userEmail=""
 
@@ -19,16 +19,46 @@ function doGenerateSshKeys()
     doPublishSshKeys
 }
 
+function First_and_lastNameValidation()
+{
+IFS=" "
+set -- $userName
+lastname="$2"
+if  [[ $userName = *[[:space:]]* &&  ${userName:0:1} =~ ^[A-Z] &&  ${lastname:0:1} =~ ^[A-Z] ]] ; then
+        echo "username is ok"
+else
+        printf "ERROR !! NOTE :\n a. Name should be your firstname and lastname with space \n b. First character of firstname and lastname should be capital\n"
+exit
+fi
+}
+
+function emailValidation()
+{
+    emailEntered="$1"
+    IFS="@"
+    set -- $userEmail
+    if [ "${#@}" -ne 2 ]; then
+        printf "ERROR !! NOTE : \n please enter your jabong.com email id"
+        exit
+    fi
+    domain="$2"
+    if [ "$domain" = "jabong.com" ] ; then
+        echo "email-id is ok"
+    else
+        printf "ERROR !! NOTE : \n please enter your jabong.com email id"
+        exit
+    fi
+}
+
 function doPublishSshKeys()
 {
     echo "Install xclip if Ubuntu"
     sudo apt-get install xclip
     xclip -sel clip < ~/.ssh/id_rsa.pub
-    echo ${separator}
+
     echo ${separator}
     echo "## Please visit the link below to Add your SSH key to GitHub"
     echo "## https://github.com/settings/ssh"
-    echo ${separator}
     echo ${separator}
 }
 
@@ -40,11 +70,13 @@ function doCaptureUserInfo()
     if [ "${userName}" = "" ]; then
         printf "Enter your Full Name: "
         read userName
+	First_and_lastNameValidation
         git config --global user.name "${userName}"
     fi
     if [ "${userEmail}" = "" ]; then
         printf "Enter your email: "
         read userEmail
+	emailValidation
         git config --global user.email "${userEmail}"
     fi
     echo ${separator}
@@ -88,7 +120,7 @@ function doDownloadRepository()
 {
     echo ${separator}
     echo "Downloading Repository from LAN. This will work only if you are on LAN"
-    tempPath=~/Downloads/$(date +%Y-%m-%d_%H-%M-%S)
+    tempPath="/home/`whoami`/projects/$(date +%Y-%m-%d_%H-%M-%S)"
     mkdir -p ${tempPath}
     curl -o ${tempPath}/INDFAS.tar.bz2 "http://172.18.0.43/download/git-repository/INDFAS.tar.bz2"
     cd ${tempPath}
