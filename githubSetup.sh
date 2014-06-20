@@ -35,8 +35,6 @@ fi
 function emailValidation()
 {
     emailEntered="$1"
-#    printf "enter your email id :"
-#    read userEmail
     IFS="@"
     set -- $userEmail
     if [ "${#@}" -ne 2 ]; then
