@@ -6,7 +6,7 @@ userEmail=""
 function usage()
 {
     echo "You can run this script by running below command"
-    echo "wget https://raw.githubusercontent.com/bijayrungta/utility-scripts/master/githubSetup.sh"
+    echo "bash <(curl -s --location https://raw.githubusercontent.com/bijayrungta/utility-scripts/master/githubSetup.sh)"
     echo "bash githubSetup.sh"
 }
 
@@ -24,11 +24,10 @@ function doPublishSshKeys()
     echo "Install xclip if Ubuntu"
     sudo apt-get install xclip
     xclip -sel clip < ~/.ssh/id_rsa.pub
-    echo ${separator}
+
     echo ${separator}
     echo "## Please visit the link below to Add your SSH key to GitHub"
     echo "## https://github.com/settings/ssh"
-    echo ${separator}
     echo ${separator}
 }
 
@@ -55,7 +54,7 @@ function initSetup()
 {
     originalDir=$(pwd)
     echo ${separator}
-    echo 'Welcometo Jabong!! This script will help you get started with Development for Jabong'.
+    echo 'Welcome!! This script will help you get started with Development with GitHub'.
     echo "Create the SSH Directory if it doesn't exist"
     mkdir -p ~/.ssh
 
@@ -84,35 +83,12 @@ function runSetup()
     cd ${originalDir}
 }
 
+
 function doDownloadRepository()
 {
     echo ${separator}
-    echo "Downloading Repository from LAN. This will work only if you are on LAN"
-    tempPath=~/Downloads/$(date +%Y-%m-%d_%H-%M-%S)
-    mkdir -p ${tempPath}
-    curl -o ${tempPath}/INDFAS.tar.bz2 "http://172.18.0.43/download/git-repository/INDFAS.tar.bz2"
-    cd ${tempPath}
-    tar pxjf INDFAS.tar.bz2
-    cd INDFAS
-    git fetch origin
-    git reset --hard FETCH_HEAD
-    git pull origin master
-    echo "Fix permissions for directories."
-    bash tools/initRepo.sh
-
-    if [ -d ~/projects/INDFAS ]; then
-        echo "You seem to already have a setup at ~/projects/INDFAS. Please move this Directory if you want to start afresh"
-        echo "Latest Repository has been downloaded into a folder ${tempPath} and can be used for an additional setup."
-    else
-        mkdir -p ~/projects
-        mv ${tempPath}/INDFAS ~/projects/
-        rm -fR ${tempPath}
-        echo "Your repository is all set at location ~/projects/INDFAS"
-    fi
-    echo "!!!!!!!!!!!!! CONGRATULATIONS, you are all set. !!!!!!!!!!!!!!!"
-    echo ${separator}
+    echo "Please contact the Repository maintainer to provide you access to Project Repository that you need to work on!"
 }
-
 separator="#########################################################################"
 # operation="$1"
 
