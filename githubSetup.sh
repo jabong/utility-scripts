@@ -10,6 +10,37 @@ function usage()
     echo "bash githubSetup.sh"
 }
 
+function doValidateName()
+{
+    IFS=" "
+    set -- $userName
+    lastname="$2"
+    if  [[ $userName = *[[:space:]]* &&  ${userName:0:1} =~ ^[A-Z] &&  ${lastname:0:1} =~ ^[A-Z] ]] ; then
+        echo "username is ok"
+    else
+        printf "ERROR !! NOTE :\n a. Name should be your firstname and lastname with space \n b. First character of firstname and lastname should be capital\n"
+        exit
+    fi
+}
+
+function doValidateEmail()
+{
+    emailEntered="$1"
+    IFS="@"
+    set -- $userEmail
+    if [ "${#@}" -ne 2 ]; then
+        printf "ERROR !! NOTE : \n please enter your jabong.com email id"
+        exit
+    fi
+    domain="$2"
+    if [ "$domain" = "jabong.com" ] ; then
+        ok="email-id is ok"
+    else
+        printf "ERROR !! NOTE : \n please enter your jabong.com email id"
+        exit
+    fi
+}
+
 function doGenerateSshKeys()
 {
     cd ~/.ssh
@@ -39,11 +70,13 @@ function doCaptureUserInfo()
     if [ "${userName}" = "" ]; then
         printf "Enter your Full Name: "
         read userName
+        doValidateName
         git config --global user.name "${userName}"
     fi
     if [ "${userEmail}" = "" ]; then
         printf "Enter your email: "
         read userEmail
+        doValidateEmail
         git config --global user.email "${userEmail}"
     fi
     echo ${separator}
